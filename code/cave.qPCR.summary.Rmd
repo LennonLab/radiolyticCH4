@@ -1,0 +1,222 @@
+---
+title: "Cave Rock Values"
+author: "Kevin D. Webster and Jay T. Lennon"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## Overview
+Code written by Kevin Webster to calcuate copy number abundance (expressed as MOB per gram rock bifoilm) and relative abundance (MOB / 16S rRNA gene)
+
+## Set working directory
+```{r}
+rm(list=ls())
+getwd()
+setwd("~/GitHub/radiolyticCH4")
+```
+
+## Read in relevant data
+```{r}
+mob <- read.delim("data/qPCR/mob.rabund.txt", sep =" ", stringsAsFactors = FALSE) 
+rock.names <- read.delim("data/qPCR/sample.by.rock.txt", stringsAsFactors = FALSE, header = FALSE) 
+
+mob[is.na(mob)] <- 0
+```
+
+## Calculate the average pmoA copy numbers on each rock per gram
+```{r}
+mob[,5] <- as.numeric(mob[,5]) # change data type of mob column 3
+
+n.mob <- mob[,5] # names the mob copy number vector
+
+#Calculate the arverage copy numbers on each rock
+
+# Minh Chou Cave Bag 1 ROck 1
+MC1R1 = mean(mob[1:3,5])
+
+# Minh Chou Cave Bag 1 Rock 2 
+MC1R2 = mean(mob[7:9,5])
+
+# Minh Chou Cave Bag 1 Rock 3 
+MC1R3 = mean(mob[19:21,5])
+
+# Minh Chou Cave Bag 2 Rock 1 
+MC2R1 = mean(mob[16:18,5])
+
+# Minh Chou Cave Bag 2 Rock 2 
+MC2R2 = mean(mob[13:15,5])
+
+# Minh Chou Cave Bag 2 Rock 3 
+MC2R3 = mean(mob[25:27,5])
+
+# Minh Chou Cave Bag 3 Rock 1 
+MC3R1 = mean(mob[10:12,5])
+
+# Minh Chou Cave Bag 3 Rock 2 
+MC3R2 = mean(mob[4:6,5])
+
+# Minh Chou Cave Bag 3 Rock 3 
+MC3R3 = mean(mob[22:24,5])
+
+# Hoa Cuong Cave Bag 1 Rock 1  
+HC1R1 = mean(mob[40:42,5])
+
+# Hoa Cuong Cave Bag 1 Rock 2  
+HC1R2 = mean(mob[49:51,5])
+
+# Hoa Cuong Cave Bag 1 Rock 3 
+HC1R3 = mean(mob[46:48,5])
+
+# Hoa Cuong Cave Bag 2 Rock 1 
+HC2R1 = mean(mob[28:30,5])
+
+# Hoa Cuong Cave Bag 2 Rock 2 
+HC2R2 = mean(mob[43:45,5])
+
+# Hoa Cuong Cave Bag 2 Rock 3 
+HC2R3 = mean(mob[37:39,5])
+
+# Hoa Cuong Cave Bag 3 Rock 1 
+HC3R1 = mean(mob[34:36,5])
+
+# Hoa Cuong Cave Bag 3 Rock 2 
+HC3R2 = mean(0,0,0)
+
+# Hoa Cuong Cave Bag 3 Rock 3 
+HC3R3 = mean(mob[31:33,5])
+```
+
+## Calculate average copy number per gram of soil per bag
+```{r}
+
+# Minh Chou Cave Bag 1 
+MC1 <- (MC1R1+MC1R3)/2 # removed MC1R2; no amplification
+
+# Minh Chou Cave Bag 2 
+MC2 <- (MC2R1+MC2R2+MC2R3)/3 
+
+# Minh Chou Cave Bag 3 
+MC3 <- (MC3R1+MC3R2+MC3R3)/3 
+
+# Hoa Cuong Cave Bag 1
+HC1 <- (HC1R1+HC1R2)/2 # removed HC1R3; no amplificaiton
+
+# Hoa Cuong Cave Bag 2
+HC2 <- (HC2R1+HC2R2+HC2R3)/3 
+
+# Hoa Cuong Cave Bag 3
+HC3 <- (HC3R1+HC3R2+HC3R3)/3
+
+sem <- function(x) sqrt(var(x)/length(x))
+meanMC.gram <- mean(c(MC1, MC2, MC3))
+min(c(MC1, MC2, MC3))
+max(c(MC1, MC2, MC3))
+
+
+semMC.gram <- sem((c(MC1, MC2, MC3)))
+meanHC.gram <- mean(c(HC1, HC2, HC3))
+semHC.gram <- sem(c(HC1, HC2, HC3))
+min(c(HC1, HC2, HC3))
+max(c(HC1, HC2, HC3))
+```
+
+## Calculate the average relative abundance
+```{r}
+mob[,4] <- as.numeric(mob[,4]) # change data type of mob column 3
+
+n.mob <- mob[,4] # names the mob copy number vector
+
+#Calculate the arverage copy numbers on each rock
+
+# Minh Chou Cave Bag 1 ROck 1
+relMC1R1 = mean(mob[1:3,4])
+
+# Minh Chou Cave Bag 1 Rock 2 
+# relMC1R2 = mean(mob[7:9,4]) # no MOB amplificaiton on entire sample
+
+# Minh Chou Cave Bag 1 Rock 3 
+relMC1R3 = mean(mob[19:21,4])
+
+# Minh Chou Cave Bag 2 Rock 1 
+relMC2R1 = mean(mob[16:17,4]) # no MOB amplifcition on 269 tech rep 3
+
+# Minh Chou Cave Bag 2 Rock 2 
+relMC2R2 = mean(mob[13,4]) # no amplificaiton on 268 tech rep 2 and 3
+
+# Minh Chou Cave Bag 2 Rock 3 
+relMC2R3 = mean(mob[c(25,27),4]) # no amplificaiton on 272 tech rep 2
+
+# Minh Chou Cave Bag 3 Rock 1 
+#relMC3R1 = mean(mob[10:12,4]) # no MOB amplificaiton on entire sample
+
+# Minh Chou Cave Bag 3 Rock 2 
+relMC3R2 = mean(mob[5:6,4]) # outlier on 265 tech rep 1
+
+# Minh Chou Cave Bag 3 Rock 3 
+#relMC3R3 = mean(mob[22:24,4]) # no MOB amplificaiton on entire sample
+
+# Hoa Cuong Cave Bag 1 Rock 1  
+relHC1R1 = mean(mob[40:42,4])
+
+# Hoa Cuong Cave Bag 1 Rock 2  
+relHC1R2 = mean(mob[49:51,4])
+
+# Hoa Cuong Cave Bag 1 Rock 3 
+relHC1R3 = mean(mob[46:48,4])
+
+# Hoa Cuong Cave Bag 2 Rock 1 
+relHC2R1 = mean(mob[28:30,4])
+
+# Hoa Cuong Cave Bag 2 Rock 2 
+relHC2R2 = mean(mob[43:45,4])
+
+# Hoa Cuong Cave Bag 2 Rock 3 
+#relHC2R3 = mean(mob[37:39,4]) # no MOB amplificaiton on entire sample
+
+# Hoa Cuong Cave Bag 3 Rock 1 
+relHC3R1 = mean(mob[c(34,36),4]) # no amplificaiton on 272 tech rep 2
+
+# Hoa Cuong Cave Bag 3 Rock 2 
+relHC3R2 = mean(0,0,0)
+
+# Hoa Cuong Cave Bag 3 Rock 3 
+relHC3R3 = mean(mob[31:33,4])
+```
+
+## Calculate average rel abund per bag
+```{r}
+
+# Minh Chou Cave Bag 1 
+relMC1 <- (relMC1R1+relMC1R3)/2 # removed MC1R2; no amplification
+
+# Minh Chou Cave Bag 2 
+relMC2 <- (relMC2R1+relMC2R2+relMC2R3)/3 
+
+# Minh Chou Cave Bag 3 
+relMC3 <- (relMC3R1+relMC3R2)/2 
+
+# Hoa Cuong Cave Bag 1
+relHC1 <- (relHC1R1+relHC1R2+relHC1R3)/3 
+
+# Hoa Cuong Cave Bag 2
+relHC2 <- (relHC2R1+relHC2R2)/2 
+
+# Hoa Cuong Cave Bag 3
+relHC3 <- (relHC3R1+relHC3R3)/2
+
+sem <- function(x) sqrt(var(x)/length(x))
+rel.meanMC.gram <- mean(c(relMC1, relMC2, relMC3))
+min(c(relMC1, relMC2, relMC3))*100
+max(c(relMC1, relMC2, relMC3))*100
+
+semMC.gram <- sem((c(rekMC1, relMC2, relMC3)))
+
+rel.meanHC.gram <- mean(c(relHC1, relHC2, relHC3))
+rel.semHC.gram <- sem(c(relHC1, relHC2, relHC3))
+min(c(relHC1, relHC2, relHC3))*100
+max(c(relHC1, relHC2, relHC3))*100
+```
+

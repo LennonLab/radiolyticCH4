@@ -1,0 +1,65 @@
+---
+title: "MOB Relative Abundance"
+author: "Kevin D. Webster and Jay T. Lennon"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## Overview
+Following code written by Kevin Webster to estimate MOB relative abundance from qPCR data
+
+## Set working directory
+```{r}
+rm(list=ls())
+getwd()
+setwd("~/GitHub/radiolyticCH4")
+```
+
+## Read Microbial data
+```{r}
+mob <- read.delim("data/qPCR/mob.661.out.txt", sep =" ", stringsAsFactors = FALSE) 
+eub <- read.delim("data/qPCR/20150813_VN_EUB_qPCR.txt", stringsAsFactors = FALSE) 
+```
+
+## Calculate the relative abundance of methanotrophs
+```{r}
+mob[,4] <- as.numeric(mob[,4]) # change data type of mob column 4
+eub[,4] <- as.numeric(eub[,4]) # change data type of eub column 4
+mob[,2] <- as.numeric(mob[,2]) # change data type of mob column 2
+
+n.mob <- mob[1:51,4] # names the mob copy number vector
+n.eub <- eub[1:51,4] # names the 16S copy number vector
+
+# mass of the soil used to extract DNA from
+mass <- c(0.25, 0.25, 0.25, 0.23, 0.23, 0.23, 0.25, 0.25, 0.25, 
+          0.25, 0.25, 0.25, 0.19, 0.19, 0.19, 0.25, 0.25, 0.25, 
+          0.245, 0.245, 0.245, 0.235, 0.235, 0.235, 0.25, 0.25, 0.25, 
+          0.25, 0.25, 0.25, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 
+          0.23, 0.23, 0.23, 0.25, 0.25, 0.25, 0.245, 0.245, 0.245, 
+          0.25, 0.25, 0.25, 0.24, 0.24, 0.24) 
+
+# dilution of template used for qPCR
+dil <- c(1.49, 1.49, 1.49, 24, 24, 24, 20, 20, 20, 
+          10, 10, 10, 18.75, 18.75, 18.75, 7.2, 7.2, 7.2, 
+          8.4, 8.4, 8.4, 16.4, 16.4, 16.4, 4.4, 4.4, 4.4, 
+          20.4, 20.4, 20.4, 12, 12, 12, 1, 1, 1, 
+          1, 1, 1, 30, 30, 30, 6.8, 6.8, 6.8, 
+          2.8, 2.8, 2.8, 5.2, 5.2, 5.2)
+
+# correct for the diltuion of template
+n.mob.cor <- n.mob*dil
+
+mob.rabund <- n.mob/n.eub # calculates the relative abundance of MOB
+
+# calculate the number of pmoA genes per gram of soil
+mob.p.mass <- n.mob.cor/mass 
+
+name <- mob[1:51,2] # generates a labeling vector
+t.m.rabund <- cbind(name, mass, n.mob.cor, mob.rabund, mob.p.mass) # summary table
+
+write.table(t.m.rabund, file = "data/qPCR/mob.rabund.txt")
+```
+

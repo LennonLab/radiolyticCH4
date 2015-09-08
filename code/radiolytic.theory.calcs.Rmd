@@ -1,0 +1,107 @@
+---
+title: "Calculations for abiotic methane oxidation"
+author: "Lennon et al."
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## Set working directory
+```{r}
+rm(list=ls())
+getwd()
+#setwd("~/GitHub/radiolytic")
+```
+
+## Energy generated from radon decay
+First step in the radon decay chain is the $\alpha$-decay of a single ^222^Rn atom to ^218^Po. 
+From Ruzer (2004), Table 14.1, page 365 in "Aerosols Handbook: Measurement, Dosimetry, and Health Effects" editors L.S. Ruzer and N.H. Harley. CRC Press.
+```{r}
+# Megaelectron-volts (MeV) from Rn decay
+Rn.decay <- 5.486 
+
+# Conversion factro from MeV to kilojoules (kJ)
+MeV.kJ <- 1.602 * 10^-16 
+
+# kJ of energy in 222Rn to 218Po decay
+print (MeV.kJ * Rn.decay) 
+```
+
+## Energy required to generate a methyl radical from CH~4~
+```{r}
+# Bond energy (kJ/mol) to break C-H in CH4 (Smith and March 2007)
+bond <- 416
+
+# Avogadro's number
+A <- 6.023 * 10^23
+
+# Energy needed to generate a methyl radical
+ print(methyl.rad <- bond/A)
+```
+
+## How many CH~4~ molecules are there in 2 ppm CH~4~ of air?
+```{r}
+# assumed ppm of CH4 in air
+CH4.air.ppm <- 2
+
+# assumed conctrnation of CH4 in air
+CH4.air.conc <- CH4.air.ppm/10^6
+
+# Number of molecules in 1 mole of air
+mol.air <- 6.023 * 10^23 
+
+# Number of molecules of CH4 in 1 mole of air at 2 ppm CH4
+CH4.molec.mol.air <- mol.air * CH4.air.conc 
+
+# Number of liters in a mole
+L.mole <- 22.4
+
+# Liters in a cubic meter (m^3)
+L.cm3 <- 1000
+
+# Molecules of CH4 in 1 m^3 of air at 2 ppm CH4
+CH4.molec.m3.air <- (CH4.molec.mol.air / L.mole) * L.cm3
+
+print(CH4.molec.m3.air)
+```
+
+## How many CH~4~ molecules can be oxidized via direct contact with $\alpha$ particles?
+```{r}
+# Reported 222Rn concentration (Bq m^-3) in Castanar Cave; decays per second
+Rn <- 35000 
+
+# Time to oxidize all CH4 molecules in 2 ppm CH4
+CH4.time.secs <- CH4.molec.m3.air/Rn
+
+CH4.time.mins <- CH4.time.secs/60
+
+CH4.time.hrs <- CH4.time.mins/60
+
+CH4.time.days <- CH4.time.hrs/24
+
+CH4.time.yrs <- CH4.time.days/365
+
+print(format(CH4.time.yrs, scientific = TRUE))
+```
+
+## How many CH~4~ molecules can be oxidized via ions and radicals generated via $\alpha$ particles?
+```{r}
+
+# Ions generated assuming 1 alpha decay generates 10^7 total ions
+ions <- 10^7
+
+# Time to oxidize all CH4 molecules in 2 ppm CH4
+CH4.time.ions.sec <- CH4.molec.m3.air/(Rn*ions)
+  
+CH4.time.ions.min <- CH4.time.ions.sec/60
+
+CH4.time.ions.hrs <- CH4.time.ions.min/60
+
+CH4.time.ions.day <- CH4.time.ions.hrs/24
+
+CH4.time.ions.yrs <- CH4.time.ions.day/365
+
+print(format(CH4.time.ions.yrs, scientific = FALSE))
+```

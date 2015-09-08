@@ -1,0 +1,101 @@
+---
+title: "Vietnam Caves - Surface Areas"
+author: "Jay T. Lennon"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+Part of May 2015 mesocosm experiment on Cat Ba Island, Vietnam to investigate mechanisms of methane oxidation in cave ecosystems. General design of experiment was to conduct in situ "bag" experiments where rocks where "live" and "dead" rocks were incubated overnight. Rocks that were incubated in the bags were taken out and measured so we could estimate rates of methane oxication on an areal basis. In Hoa Cương cave, we took pictures of each of the rocks. I imported these images into Adobe Photoshop CS6. I used the ruler tool to measure the obtain measurements so that I could estimate the surface area of each rock assuming an ellipsoid shape. Calculation below are used to estimate rocks surface area from these measurments. 
+
+## 1) SET WORKING DIRECTORY AND LOAD DATA
+```{r}
+rm(list=ls()) 
+getwd()
+setwd("~/GitHub/radiolyticCH4")
+data <- read.table("data/areas/surface.area.txt", sep="\t", header=TRUE)
+rocks <- data[data$rock != "cap",] # only rock meausrements
+caps <- data[(data$rock == "cap"),] # bottle cap used for scale conversion
+```
+
+## 2) ESTIMATING THIRD RADII
+You need three radii to estimate the surface area of an ellipsoid. 
+I measured two of the radii (radius.a and radius.b).
+The third radii is in the z-plane in the photographs and cannot be measured. 
+However, based on field observations of the rocks in the caves, the rocks were
+generally flat shaped, so we assume that radius.c is 25% of the average of 
+radius.a and radius.b
+
+```{r}
+radius.c <- round(apply(rocks[,3:4], 1, mean) * 0.25, 1)
+rocks <- cbind(rocks, radius.c)
+elip <- function(x, y, z) 4 * pi * (((x*y)^1.6 + (x*z)^1.6 + (y*z)^1.6)/3)^(1/1.6)
+rocks.sa <- elip(rocks$radius.a, rocks$radius.b, rocks$radius.c) # surface areas
+rocks <- cbind(rocks, rocks.sa)
+```
+
+## STANDARDIZING BY KNOWN AREA
+Estimates above are in "photoshop units" from images in Hoa Cuong.
+We need to convert to cm^2. 
+We're going to do this with photoshop units on an object with known surface area:
+a cap to a water bottle
+
+```{r}
+cap.sa.1.PS <- pi * caps$radius.a[1]^2 # photoshop area of cap from bag 1
+cap.sa.2.PS <- pi * caps$radius.a[2]^2 # photoshop area of cap from bag 2
+cap.sa.3.PS <- pi * caps$radius.a[3]^2 # photoshop area of cap from bag 3
+cap.sa.real <- pi * 1.27^2
+```
+
+## CONVERT ROCKS SURFACE AREA TO STANDARD UNITS
+
+```{r}
+rock.bag1 <- rocks[rocks$bag == "1",] 
+cap.quot.1 <- cap.sa.1.PS/cap.sa.real
+rock.bag1.sa <- rock.bag1$rocks.sa / cap.quot.1
+bag1.sa <- sum(rock.bag1.sa)
+
+rock.bag2 <- rocks[rocks$bag == "2",] 
+cap.quot.2 <- cap.sa.2.PS/cap.sa.real
+rock.bag2.sa <- rock.bag2$rocks.sa / cap.quot.2
+bag2.sa <- sum(rock.bag2.sa)
+
+rock.bag3 <- rocks[rocks$bag == "3",] 
+cap.quot.3 <- cap.sa.3.PS/cap.sa.real
+rock.bag3.sa <- rock.bag3$rocks.sa / cap.quot.3
+bag3.sa <- sum(rock.bag3.sa)
+
+rock.sa.all <- c(rock.bag1.sa, rock.bag2.sa, rock.bag3.sa)
+rocks <- cbind(rocks, rock.sa.all)
+colnames(rocks)[6] <- "rocks.sa.PS"
+colnames(rocks)[7] <- "rocks.sa.cm2"
+```
+
+## MASS-SURFACE AREA PREDICTIONS
+```{r}
+rocks.surface <- c(bag1.sa, bag2.sa, bag3.sa)
+rocks.mass <- c(26, 17, 17) #kg
+rocks.fit <- lm(rocks.surface ~ rocks.mass)
+minh.chau.mass <- c(9, 8.5, 8.5)
+minh.chau.sa <- predict(rocks.fit, 
+    newdata = data.frame(rocks.mass = minh.chau.mass))
+minh.chau <- cbind(minh.chau.mass, minh.chau.sa)
+
+plot(rocks.mass, rocks.surface, xlim = c(5, 30), ylim = c(1200, 2800))
+points(minh.chau[,1],minh.chau[,2], col = "black", pch = 22, bg =  "black")
+abline(rocks.fit)
+
+surface.areas <- round(c(rocks.surface,minh.chau.sa), digits = 2)
+bags <- c(1,2,3,1,2,3)
+cave <- c("HC", "HC", "HC", "MC", "MC", "MC")
+surface.area.final <- as.data.frame(cbind(cave, bags, surface.areas), row.names = "null")
+write.table(surface.area.final, file = "data/areas/surface.area.final.txt", sep="\t")
+```
+
+
+
+
+
