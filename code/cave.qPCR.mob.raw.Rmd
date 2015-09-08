@@ -1,0 +1,65 @@
+---
+title: "MOB qPCR"
+author: "Kevin D. Webster and Jay T. Lennon"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+## Overview
+The following code takes output from the qPCR instrument and calculates gene copy abundance for methane monoxygenase (pmoA) gene
+
+## Set working directory
+```{r}
+rm(list=ls())
+getwd()
+setwd("~/GitHub/radiolyticCH4")
+```
+
+## Read MOB data
+```{r}
+mob <- read.delim("data/qPCR/20150817_VN_661_qPCR.txt", stringsAsFactors = FALSE) 
+```
+
+## Change copy numbers to their correct values
+```{r}
+# calculate the number of pmoA genes present in a 2.5 ng/uL standard
+cpn <- 2.5*10^(-9)*((202+661-189)*(660))^(-1)*6.022*10^(23)
+
+mob[57,4] <- cpn # The copy numbers entered into RealPlex were incorrect. 
+mob[58,4] <- cpn*10^(-1) # These steps use the 189 - 661 primer pair to calculate
+mob[59,4] <- cpn*10^(-2) # the number of gene copies present in solution
+mob[60,4] <- cpn*10^(-3)
+mob[61,4] <- cpn*10^(-4)
+mob[62,4] <- cpn*10^(-5)
+mob[63,4] <- cpn*10^(-6)
+mob[64,4] <- cpn*10^(-7)
+
+mob[,3] <- as.numeric(mob[,3]) # change data type of column 3
+mob[,4] <- as.numeric(mob[,4]) # change data type of column 4
+
+ct <- mob[57:64,3] # flourescent values of the standards
+s <- mob[57:64,4] # copy numbers of standards
+
+plot(ct,log10(s)) # plots copy number against standard flouresence for a visual check
+reg <- lm(log10(s) ~ ct) # linear regression of log10(s) vs ct
+abline(reg)
+reg_sum <- summary(reg) # summary of analysis
+```
+
+## qPCR statistics
+```{r}
+mob.ef <- -1+10^(-reg$coefficients[2]) # efficiency
+mob.r2 <- summary(lm(log10(s)~ct, mob))$r.squared # r^2 of the standard curve
+```
+
+## Loop to calculate MOB gene copy number from standard curve coefficients
+```{r}
+for (i in 1:51) {
+  mob[i,4] <- (10^(reg$coefficients[1] + reg$coefficients[2]*mob[i,3]))
+} 
+
+write.table(mob, file = "data/qPCR/mob.661.out.txt")
+```
+

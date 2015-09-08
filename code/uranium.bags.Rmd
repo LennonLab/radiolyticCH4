@@ -1,0 +1,284 @@
+---
+title: "Vietnam Caves - Radiation Experiments"
+author: "Jay T. Lennon"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+A series of laboratory experiments were conducted to test if radiation could explain loss of CH4 in caves. The experiments consisted of pumping CH4 into bags with or without an alpha-emitter. The bag was hooked up to a CH4 detector and this continusouly measured CH4 loss over time. 
+
+## 1) SET WORKING DIRECTORY
+```{r}
+rm(list=ls()) 
+getwd()
+setwd("~/GitHub/radiolyticCH4")
+```
+
+## 2) Load data, perform time conversions
+```{r}
+# Uranium Bag
+data.U <- read.table("data/uranium/uranium.bag.txt", sep="\t", header=TRUE)
+time.U <- data.U[,1]
+time.U <- strptime(data.U[,1], "%m/%d/%Y %H:%M")
+time.U.hr <- (time.U - time.U[1])/(60*60)
+CH4.U <- data.U[,2]
+CH4.U.per <- CH4.U/max(CH4.U)
+U.data <- as.data.frame(cbind(time.U.hr, CH4.U, CH4.U.per))
+U.rate <- lm(U.data$CH4.U ~ U.data$time.U)
+plot(U.data$time.U,U.data$CH4.U)
+abline(U.rate)
+
+# Ions Bag
+data.I.raw <- read.table("data/uranium/ion.bag.txt", sep="\t", header=TRUE)
+data.I <- data.I.raw[seq(1, nrow(data.I.raw), by=5), ] 
+time.I <- (strptime(data.I[,1], "%m/%d/%Y %H:%M"))
+time.I.hr <- (time.I - time.I[1])/(60*60)
+CH4.I <- data.I[,2]
+CH4.I.per <- CH4.I/max(CH4.I)
+I.data <- as.data.frame(cbind(time.I.hr, CH4.I, CH4.I.per))
+I.rate <- lm(I.data$CH4.I ~ I.data$time.I)
+plot(I.data$time.I, I.data$CH4.I)
+abline(I.rate)
+
+# Box 1
+data.b1 <- read.table("data/uranium/box1.bag.txt", sep="\t", header=TRUE)
+time.b1 <- (strptime(data.b1[,1], "%m/%d/%Y %H:%M"))
+time.b1.hr <- (time.b1 - time.b1[1])/(60*60)
+CH4.b1 <- data.b1[,2]
+CH4.b1.per <- CH4.b1/max(CH4.b1)
+b1.data <- as.data.frame(cbind(time.b1.hr, CH4.b1, CH4.b1.per))
+b1.rate <- lm(b1.data$CH4.b1 ~ b1.data$time.b1)
+plot(b1.data$time.b1, b1.data$CH4.b1)
+abline(b1.rate)
+
+# Box 4
+data.b4 <- read.table("data/uranium/box4.bag.txt", sep="\t", header=TRUE)
+time.b4 <- (strptime(data.b4[,1], "%m/%d/%Y %H:%M"))
+time.b4.hr <- (time.b4 - time.b4[1])/(60*60)
+CH4.b4 <- data.b4[,2]
+CH4.b4.per <- CH4.b4/max(CH4.b4)
+b4.data <- as.data.frame(cbind(time.b4.hr, CH4.b4, CH4.b4.per))
+b4.rate <- lm(b4.data$CH4.b4 ~ b4.data$time.b4)
+plot(b4.data$time.b4, b4.data$CH4.b4)
+abline(b4.rate)
+
+# Black bag 0703
+data.black.03 <- read.table("data/uranium/black.bag.0703.txt", sep="\t", header=TRUE)
+time.03 <- (strptime(data.black.03[,1], "%m/%d/%Y %H:%M"))
+time.03.hr <- (time.03 - time.03[1])/(60*60)
+CH4.03 <- data.black.03[,2]
+CH4.03.per <- CH4.03/max(CH4.03)
+b.03.data <-as.data.frame(cbind(time.03.hr, CH4.03, CH4.03.per))
+b.03.rate <- lm(b.03.data$CH4.03 ~ b.03.data$time.03)
+plot(b.03.data$time.03, b.03.data$CH4.03)
+abline(b.03.rate)
+
+# Black bag 0706
+data.black.06 <- read.table("data/uranium/black.bag.0706.txt", sep="\t", header=TRUE)
+time.06 <- (strptime(data.black.06[,1], "%m/%d/%Y %H:%M"))
+time.06.hr <- (time.06 - time.06[1])/(60*60)
+CH4.06 <- data.black.06[,2]
+CH4.06.per <- CH4.06/max(CH4.06)
+b.06.data <-as.data.frame(cbind(time.06.hr, CH4.06, CH4.06.per))
+b.06.rate <- lm(b.06.data$CH4.06 ~ b.06.data$time.06)
+plot(b.06.data$time.06, b.06.data$CH4.06)
+abline(b.06.rate)
+
+# Black bag 0707
+data.black.07 <- read.table("data/uranium/black.bag.0707.txt", sep="\t", header=TRUE)
+time.07 <- (strptime(data.black.07[,1], "%m/%d/%Y %H:%M"))
+time.07.hr <- (time.07 - time.07[1])/(60*60)
+CH4.07 <- data.black.07[,2]
+CH4.07.per <- CH4.07/max(CH4.07)
+b.07.data <-as.data.frame(cbind(time.07.hr, CH4.07, CH4.07.per))
+b.07.rate <- lm(b.07.data$CH4.07 ~ b.07.data$time.07)
+plot(b.07.data$time.07, b.07.data$CH4.07)
+abline(b.07.rate)
+
+# Black bag 0708
+data.black.08 <- read.table("data/uranium/black.bag.0708.txt", sep="\t", header=TRUE)
+time.08 <- (strptime(data.black.08[,1], "%m/%d/%Y %H:%M"))
+time.08.hr <- (time.08 - time.08[1])/(60*60)
+CH4.08 <- data.black.08[,2]
+CH4.08.per <- CH4.08/max(CH4.08)
+b.08.data <-as.data.frame(cbind(time.08.hr, CH4.08, CH4.08.per))
+b.08.rate <- lm(b.08.data$CH4.08 ~ b.08.data$time.08)
+plot(b.08.data$time.08, b.08.data$CH4.08)
+abline(b.08.rate)
+```
+
+## 3) Test of the oxidation slopes
+```{r}
+uranium.rate <- U.rate$coefficients[2]
+
+control.rates <-c(I.rate$coefficients[2], b1.rate$coefficients[2], 
+      b4.rate$coefficients[2], b.03.rate$coefficients[2], b.06.rate$coefficients[2],
+      b.07.rate$coefficients[2], b.08.rate$coefficients[2])
+
+# one-sample t-test
+u.t.test <- t.test(control.rates, mu = uranium.rate)
+```
+
+## 3) Estimating rates of CH4 depletion
+
+```{r}
+# Conversion factors
+gas.mol <- 22.4 # L occupied by 1 mole of gas
+bag.vol <- 43 # L; operating volume of bags
+l.m3 <- 1000 # L to m3 conversion
+ppm.conv <- 10^-6
+m.umol.conv <- 10^6
+gfw.ch4 <- 16.042
+
+# Rate calculations
+rates.ppm.h <- uranium.rate # rate of oxidation -- mean
+se.ppm.h <- sqrt(diag(vcov(U.rate))) # rate of oxidation -- SEM
+parms.ppm.h <- c(rates.ppm.h, se.ppm.h[2]) # concatenate mean and SEM                 
+parms.ppm.d <- parms.ppm.h/24 # convert from hours to days
+rates.umol.L.d <- (parms.ppm.d * ppm.conv) * (1/gas.mol) * 
+  bag.vol * m.umol.conv # convert to umol
+rates.mg.L.d <- rates.umol.L.d * gfw.ch4 / 1000
+rates.ng.m3.d <- rates.mg.L.d * 10^6 /l.m3
+```
+
+##3) Make UR-CH4 concentration plot vs. time
+```{r}
+png(filename="/Users/lennonj/GitHub/Vietnam/figures/lab.bags.concentration.png",
+    width = 1200, height = 900, res = 96*2)
+
+plot.new()
+par(mar = c(7, 7, 5, 7))
+
+# Plot Uranium Bag
+plot(time.U.hr, CH4.U, xlim = c(-1,25), ylim = c(0, 35), type = "l", 
+     col = "black", cex = 2, ylab = "", xlab = "", 
+     cex.lab = 1.5, las = 1, lwd = 2, yaxt = "n", xaxt = "n")
+box(lwd=2)
+
+# Plot Ion Bag
+points(time.I.hr, CH4.I, type = "l", 
+       col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Plot Box 1
+points(time.b1.hr, CH4.b1, type = "l", 
+       col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Plot Box 4
+points(time.b4.hr, CH4.b4, type = "l", 
+       col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Plot black bag 0703
+points(time.03.hr, CH4.03, type = "l", 
+       col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Plot black bag 0706
+points(time.06.hr[1:288], CH4.06[1:288], type = "l", 
+       col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Plot black bag 0707
+points(time.07.hr, CH4.07, type = "l", 
+       col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Plot black bag 0708
+points(time.08.hr[1:290], CH4.08[1:290], type = "l", 
+       col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Add ticks and tick labels
+axis(side = 2, lwd.ticks = 2, las = 1, cex.axis = 1.25, 
+   labels = c("0", "10", "20", "30"), 
+        at = c(0, 10, 20, 30))
+
+axis(side = 4, labels = F, lwd.ticks = 2, 
+   at = c(0, 5, 10, 15, 20, 25, 30))
+
+axis(side = 1, lwd.ticks = 2, cex.axis = 1.25, las = 1, mgp = c(3, 1, 0),
+    labels = c("0", "5", "10", "15", "20", "25"), at = c(0, 5, 10, 15, 20, 25))
+
+axis(side = 3, labels = F, lwd.ticks = 2, las = 1, cex.axis = 1.25, 
+   at = c(0, 5, 10, 15, 20, 25))
+
+mtext(expression('CH'[4]*' (ppm)'), side = 2, outer = TRUE, cex = 1.5, 
+      line = -3, adj = 0.55)
+
+mtext('Time (h)', side = 1, outer = TRUE, cex = 1.5, 
+      line = -3.5, adj = 0.5)
+
+legend("bottomright", c("- radiation", "+ radiation"), bty = "n", y.intersp = 1, lty = c(3, 1), 
+       lwd = 2.5, seg.len = 2.25, col = c("grey","black"), cex = 1)
+
+dev.off()
+graphics.off()
+```
+
+## 4) Make UR-CH4 proportion-loss plot vs. time
+```{r}
+png(filename="/Users/lennonj/GitHub/Vietnam/figures/lab.bags.proportion.png",
+    width = 1200, height = 800, res = 96*2)
+
+plot.new()
+par(mar = c(7, 7, 5, 7))
+
+# Plot Uranium Bag
+plot(time.U.hr, CH4.U.per, xlim = c(0,25), ylim = c(0, 1), type = "l", 
+     col = "black", cex = 2, ylab = "", xlab = "", 
+     cex.lab = 1.5, las = 1, lwd = 1, lty = 3, yaxt = "n", xaxt = "n",
+  panel.first={
+       polygon(c(time.shade, time.shade.rev), c(min.CH4,rev(max.CH4)), col="grey", border=NA)
+})
+box(lwd=2)
+
+# # Plot Ion Bag
+# points(time.I.hr, CH4.I.per, type = "l", 
+#        col = "grey", lty = 3, cex = 2, lwd = 1)
+# 
+# # Plot Box 1
+# points(time.b1.hr, CH4.b1.per, type = "l", 
+#        col = "grey", lty = 3, cex = 2, lwd = 2)
+# 
+# # Plot Box 4
+# points(time.b4.hr, CH4.b4.per, type = "l", 
+#        col = "grey", lty = 3, cex = 2, lwd = 2)
+# 
+# # Plot black bag 0703
+# points(time.03.hr, CH4.03.per, type = "l", 
+#        col = "grey", lty = 3, cex = 2, lwd = 2)
+# 
+# # Plot black bag 0706
+# points(time.06.hr[1:289], CH4.06.per[1:289], type = "l", 
+#        col = "grey", lty = 3, cex = 2, lwd = 2)
+# 
+# # Plot black bag 0707
+# points(time.07.hr, CH4.07.per, type = "l", 
+#        col = "grey", lty = 3, cex = 2, lwd = 2)
+# 
+# # Plot black bag 0708
+# points(time.08.hr, CH4.08.per, type = "l", 
+#        col = "grey", lty = 3, cex = 2, lwd = 2)
+
+# Add ticks and tick labels
+axis(side = 2, lwd.ticks = 2, las = 1, cex.axis = 1.25, 
+   labels = c("0.00", "0.25", "0.50", "0.75", "1.00"), 
+        at = c(0, 0.25, 0.5, 0.75, 1.0))
+
+axis(side = 4, labels = F, lwd.ticks = 2, 
+   at = c(0, 0.25, 0.5, 0.75, 1.0))
+
+axis(side = 1, lwd.ticks = 2, cex.axis = 1.25, las = 1, mgp = c(3, 2, 0),
+    labels = c("0", "5", "10", "15", "20", "25"), at = c(0, 5, 10, 15, 20, 25))
+
+axis(side = 3, labels = F, lwd.ticks = 2, las = 1, cex.axis = 1.25, 
+   at = c(0, 5, 10, 15, 20, 25))
+
+mtext(expression('Proportion CH'[4]), side = 2, outer = TRUE, cex = 1.5, 
+      line = -2, adj = 0.6)
+
+mtext('Time (h)', side = 1, outer = TRUE, cex = 1.5, 
+      line = -2.5, adj = 0.5)
+
+dev.off()
+graphics.off()
+```

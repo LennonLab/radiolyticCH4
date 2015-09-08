@@ -1,0 +1,205 @@
+---
+title: "Vietnam Caves - Bag Experiments"
+author: "Jay T. Lennon"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+Part of May 2015 mesocosm experiment on Cat Ba Island, Vietnam to investigate mechanisms of methane oxidation in cave ecosystems. General design of experiment was to conduct in situ "bag" experiments where rocks where "live" and "dead" rocks were incubated overnight. The live rock treatment contained ~10 rocks and 150 mL of water in a ~50 gallon polyethylene bag sealed tight. The dead rock treatment contained ~10 rocks and 150 mL of a 10% bleach solution. We measured methane of the air that was used to fill the bags at time zero using a Gasmet. We returned to the cave approximatley 18 hours later and measured methane in the bags at time final. In addition, we had a control, which consisted of measuring methane in a bag containing no rocks, water, or bleach. This generalized experiment was conducted in three caves: Hoa Cuong and Minh Chau. 
+
+## 1) SET WORKING DIRECTORY AND LOAD DATA
+```{r}
+rm(list=ls()) 
+getwd()
+setwd("~/GitHub/radiolyticCH4")
+data <- read.table("data/cavebag/bagexp.txt", sep="\t", header=TRUE)
+data <- data[-19,] # remove: sample "9e" = cave air measured near bag 
+```
+
+## 2) SUBSET DATA AND T-TESTS
+
+### Hoa Cuong
+```{r}
+HC <- data[(data$Cave == "Hoa_Cuong") & (data$Treat == "live"| data$Treat =="dead"),] 
+HC.dead <- data[(data$Cave == "Hoa_Cuong") & (data$Treat =="dead"),]
+HC.means <- tapply(HC$CH4, HC$Treat, mean)
+HC.cont <- data[(data$Cave == "Hoa_Cuong") & (data$Treat == "control"),]
+HC.means[1] <- HC.cont$CH4
+HC.means <- HC.means[c(1,3:4)]
+sem <- function(x) sqrt(var(x)/length(x))
+HC.sem <- tapply(HC$CH4, HC$Treat, sem)
+HC.sem[1] <- 0
+HC.sem <- HC.sem[c(1,3:4)]
+HC.air <- data[(data$Cave == "Hoa_Cuong") & (data$Treat == "air"),]
+HC.t.test <- t.test(HC$CH4 ~ HC$Treat)
+HC.t.test
+# fold decrease
+HC.fold <- mean(HC.means[1],HC.means[2])/HC.means[3] 
+# percent decrease
+HC.per <- (mean(HC.means[1],HC.means[2])-HC.means[3])/mean(HC.means[1],HC.means[2])
+# test dead vs. control
+HC.t.test.dead <- t.test(HC.dead$CH4, mu = HC.cont$CH4)
+```
+
+### Minh Chau
+```{r}
+MC <- data[(data$Cave == "Minh_Chau") & (data$Treat == "live"| data$Treat =="dead"),] 
+MC.dead <- data[(data$Cave == "Minh_Chau") & (data$Treat =="dead"),]
+MC.means <- tapply(MC$CH4, MC$Treat, mean)
+MC.cont <- data[(data$Cave == "Minh_Chau") & (data$Treat == "control"),]
+MC.means[1] <- MC.cont$CH4
+MC.means <- MC.means[c(1,3:4)]
+sem <- function(x) sqrt(var(x)/length(x))
+MC.sem <- tapply(MC$CH4, MC$Treat, sem)
+MC.sem[1] <- 0
+MC.sem <- MC.sem[c(1,3:4)]
+MC.air <- data[(data$Cave == "Minh_Chau") & (data$Treat == "air"),]
+MC.t.test <- t.test(MC$CH4 ~ MC$Treat)
+MC.t.test
+# fold decrease
+MC.fold <- mean(MC.means[1],MC.means[2])/MC.means[3]
+# percent decrease
+MC.per <- (mean(MC.means[1],MC.means[2])-MC.means[3])/mean(MC.means[1],MC.means[2])
+# test dead vs. control
+MC.t.test.dead <- t.test(MC.dead$CH4, mu = MC.cont$CH4)
+```
+
+### Percent reduction in live bags
+```{r}
+HC.live <- HC[(HC$Treat == "live"),]
+HC.red.1 <- (mean(HC.dead[,5]) - HC.live[1,5])/mean(HC.dead[,5])
+HC.red.2 <- (mean(HC.dead[,5]) - HC.live[2,5])/mean(HC.dead[,5])
+HC.red.3 <- (mean(HC.dead[,5]) - HC.live[3,5])/mean(HC.dead[,5])
+
+
+MC.live <- MC[(MC$Treat == "live"),]
+MC.red.1 <- (mean(MC.dead[,5]) - MC.live[1,5])/mean(MC.dead[,5])
+MC.red.2 <- (mean(MC.dead[,5]) - MC.live[2,5])/mean(MC.dead[,5])
+MC.red.3 <- (mean(MC.dead[,5]) - MC.live[3,5])/mean(MC.dead[,5])
+
+re.mean <-mean(c(HC.red.1, HC.red.2, HC.red.3, MC.red.1, MC.red.2, MC.red.3))
+re.sem <- sem(c(HC.red.1, HC.red.2, HC.red.3, MC.red.1, MC.red.2, MC.red.3))
+```
+## 3) PLOT DATA - Hoa Cuong and Mingh Chau
+```{r}
+#```{r}
+png(filename="~/GitHub/Vietnam/figures/cave.bags.2.png", width = 1500, 
+    height = 900, res = 96*2)
+
+plot.new()
+layout <- layout(cbind(1, 2), height = c(1, 1)) 
+par(mar = c(6, 0.5, 5, 0.5))
+par(oma = c(1, 5, 1, 2))
+  
+HC.plot <- plot(HC.means, ylim = c(0, 3), xlim = c(0.5, 3.5), 
+      main = "Hoa Cương", pch = 22, bg = "white", lwd = 2, cex = 3, yaxt = "n", xaxt = "n", 
+      cex.lab = 2, cex.axis = 1.5, las = 1, ylab = "", xlab = "")
+      box(lwd = 2)
+
+#Add standard errors
+arrows(x0 = 2:3, y0 = HC.means[2:3], y1 = HC.means[2:3] - HC.sem[2:3], angle = 90,
+   length = 0.05, lwd = 2)
+ arrows(x0 = 2:3, y0 = HC.means[2:3], y1 = HC.means[2:3] + HC.sem[2:3], angle = 90,
+   length = 0.05, lwd = 2)
+
+# Add y-label
+mtext(expression('CH'[4]*' (ppm)'), side = 2, outer = TRUE, cex = 1.75, 
+      line = 2, adj = 0.55)
+
+# Add p-value for t-test
+mtext(expression(~italic("P")~"= 0.005"), line = -1.25, cex = 1, at = 0.9)
+
+# Major Axes
+axis(side = 2, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+    labels = c(0, 1, 2, 3), at = c(0, 1, 2, 3))
+ 
+#axis(side = 4, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+#    at=c(0, 1, 2, 3), labels = F)
+ 
+axis(side = 1, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+    labels = c("control", "dead", "live"), at = c(1, 2, 3))
+
+axis(side = 3, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+    at = c(1, 2, 3), labels = F)
+
+# Add atmosphere line
+abline(h = HC.air$CH4, col = "black", lty = 3, lwd = 2)
+
+# Add Ming Chau panel to the plot
+
+MC.plot <- plot(MC.means, ylim = c(0, 3), xlim = c(0.5, 3.5), 
+      main = "Minh Châu", pch = 22, bg = "white", lwd = 2, cex = 3, yaxt = "n", xaxt = "n", 
+      cex.lab = 2, cex.axis = 1.5, las = 1, ylab = "", xlab = "")
+      box(lwd = 2)
+
+#Add standard errors
+arrows(x0 = 2:3, y0 = MC.means[2:3], y1 = MC.means[2:3] - MC.sem[2:3], angle = 90,
+   length = 0.05, lwd = 2)
+ arrows(x0 = 2:3, y0 = MC.means[2:3], y1 = MC.means[2:3] + MC.sem[2:3], angle = 90,
+   length = 0.05, lwd = 2)
+
+# Add p-value for t-test
+mtext(expression(~italic("P")~"= 0.008"), line = -1.25, cex = 1, at = 0.9)
+
+# Major Axes
+#axis(side = 2, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+#    at=c(0, 1, 2, 3), labels = F)
+ 
+axis(side = 4, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+    at=c(0, 1, 2, 3), labels = F)
+ 
+axis(side = 1, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+    labels = c("control", "dead", "live"), at = c(1, 2, 3))
+
+axis(side = 3, lwd.ticks = 2, cex.axis = 1.5, las = 1,
+    at = c(1, 2, 3), labels = F)
+
+# Add atmosphere line
+abline(h = MC.air$CH4, col = "black", lty = 3, lwd = 2)
+
+dev.off() # this writes plot to folder
+graphics.off() # shuts down open devices
+```
+
+## 5) RATES OF CH4 OXIDATION  
+Use concentraiton data, time of incbuation, and rock surface area to estimate CH4 oxidation rates per surface area rock in the bags.  
+
+```{r}
+# Load surface area data (cm2)
+sa.cm2 <- read.table("data/surface.area.txt", sep="\t", header=TRUE)
+names(sa.cm2)[3]<-paste("sa.cm2")
+sa.conv <- 10000 # cm2 to m2 conversion
+sa.m2 <- sa.cm2[,3]/sa.conv # create m2 data
+sa.data <- cbind(sa.cm2, sa.m2) # bind data
+
+# Experiment durations
+HC.time <- 18/24 # hr/hr = d
+MC.time <- 18/24 # hr/hr = d
+
+# Conversion factors
+gas.mol <- 22.4 # L occupied by 1 mole of gas
+bag.vol <- 200 # L; operating volume of bags
+ppm.conv <- 10^-6
+m.umol.conv <- 10^6
+gfw.ch4 <- 16.042
+
+# Rate calculations
+
+# X (M) = (x ppm * 10^-6/ 1 L) * (1 mole / 22.4 L) * (bag vol, L) 
+HC.diff.ppm <- (data[(data$Cave == "Hoa_Cuong") & data$Treat == "live",]$CH4 - HC.cont$CH4)
+HC.diff.umol <- (HC.diff.ppm * ppm.conv) * (1/gas.mol) * bag.vol * m.umol.conv
+HC.rate.umol <- HC.diff.umol / sa.data[sa.data$cave == "HC",]$sa.m2 / HC.time
+HC.rate.mg <- HC.rate.umol * gfw.ch4 / 1000
+
+MC.diff.ppm <- (data[(data$Cave == "Minh_Chau") & data$Treat == "live",]$CH4 - MC.cont$CH4)
+MC.diff.umol <- (MC.diff.ppm * ppm.conv) * (1/gas.mol) * bag.vol * m.umol.conv
+MC.rate.umol <- MC.diff.umol / sa.data[sa.data$cave == "MC",]$sa.m2 / MC.time
+MC.rate.mg <- MC.rate.umol * gfw.ch4 / 1000
+
+rate.range <- abs(c(max(HC.rate.mg, MC.rate.mg), min(HC.rate.mg, MC.rate.mg))) 
+```
+
