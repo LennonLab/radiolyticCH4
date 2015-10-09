@@ -282,3 +282,12 @@ mtext('Time (h)', side = 1, outer = TRUE, cex = 1.5,
 dev.off()
 graphics.off()
 ```
+
+## 5) Compare ions in bag to Castanar Cave
+```{r}
+neg.ions.cm3 <- 600 # per cm3; negative only (unsure of these numbers; insturment not peforming well)
+total.ions.cm3 <- neg.ions.cm3 * 2 # per cm3; assume negative ions = positive ions
+total.ions.m3 <- total.ions.cm3 * 10^6 # per m3
+total.ions.bag <- total.ions.m3 /1000 * bag.vol # ions per bag
+castanar.ions <- 2 *10^5 # per cm3; Fernandez-Cortes et al. 2015, page 8
+```
