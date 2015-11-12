@@ -32,6 +32,18 @@ U.rate <- lm(U.data$CH4.U ~ U.data$time.U)
 plot(U.data$time.U,U.data$CH4.U)
 abline(U.rate)
 
+# Radon Bag
+data.Rn <- read.table("data/uranium/rn.bag.20151106.txt", sep="\t", header=TRUE)
+time.Rn <- data.Rn[,1]
+time.Rn <- strptime(data.Rn[,1], "%m/%d/%Y %H:%M")
+time.Rn.hr <- (time.Rn - time.Rn[1])/(60*60)
+CH4.Rn <- data.Rn[,2]
+CH4.Rn.per <- CH4.Rn/max(CH4.Rn)
+Rn.data <- as.data.frame(cbind(time.Rn.hr, CH4.Rn, CH4.Rn.per))
+Rn.rate <- lm(Rn.data$CH4.Rn ~ Rn.data$time.Rn)
+plot(Rn.data$time.Rn,Rn.data$CH4.Rn)
+abline(Rn.rate)
+
 # Ions Bag
 data.I.raw <- read.table("data/uranium/ion.bag.txt", sep="\t", header=TRUE)
 data.I <- data.I.raw[seq(1, nrow(data.I.raw), by=5), ] 
@@ -114,13 +126,17 @@ abline(b.08.rate)
 ## 3) Test of the oxidation slopes
 ```{r}
 uranium.rate <- U.rate$coefficients[2]
+radon.rate <-Rn.rate$coefficients[2]
 
 control.rates <-c(I.rate$coefficients[2], b1.rate$coefficients[2], 
       b4.rate$coefficients[2], b.03.rate$coefficients[2], b.06.rate$coefficients[2],
       b.07.rate$coefficients[2], b.08.rate$coefficients[2])
 
-# one-sample t-test
+# one-sample t-test: uranium
 u.t.test <- t.test(control.rates, mu = uranium.rate)
+
+# one-sample t-test: radon
+r.t.test <- t.test(control.rates, mu = radon.rate)
 ```
 
 ## 3) Estimating rates of CH4 depletion
@@ -147,7 +163,7 @@ rates.ng.m3.d <- rates.mg.L.d * 10^6 /l.m3
 
 ##3) Make UR-CH4 concentration plot vs. time
 ```{r}
-png(filename="/Users/lennonj/GitHub/Vietnam/figures/lab.bags.concentration.png",
+png(filename="/Users/lennonj/GitHub/radiolyticCH4/figures/lab.bags.concentration.png",
     width = 1200, height = 900, res = 96*2)
 
 plot.new()
@@ -187,6 +203,10 @@ points(time.07.hr, CH4.07, type = "l",
 points(time.08.hr[1:290], CH4.08[1:290], type = "l", 
        col = "grey", lty = 3, cex = 2, lwd = 2)
 
+# Plot radon bag
+points(time.Rn.hr[1:936], CH4.Rn[1:936], type = "l", 
+       col = "red", lty = 3, cex = 2, lwd = 2)
+
 # Add ticks and tick labels
 axis(side = 2, lwd.ticks = 2, las = 1, cex.axis = 1.25, 
    labels = c("0", "10", "20", "30"), 
@@ -207,11 +227,18 @@ mtext(expression('CH'[4]*' (ppm)'), side = 2, outer = TRUE, cex = 1.5,
 mtext('Time (h)', side = 1, outer = TRUE, cex = 1.5, 
       line = -3.5, adj = 0.5)
 
-legend("bottomright", c("- radiation", "+ radiation"), bty = "n", y.intersp = 1, lty = c(3, 1), 
-       lwd = 2.5, seg.len = 2.25, col = c("grey","black"), cex = 1)
+legend("bottomright", c("- radiation", "+ uranium", "+ radon"), bty = "n", y.intersp = 1, lty = c(3, 1), 
+       lwd = 2.5, seg.len = 2.25, col = c("grey","black", "red"), cex = 1)
 
 dev.off()
 graphics.off()
+```
+
+```{r fig.width=6, fig.height=4,echo=FALSE,fig.cap="CH4 depletion"}
+library(png)
+library(grid)
+img <- readPNG("/Users/lennonj/GitHub/radiolyticCH4/figures/lab.bags.concentration.png")
+grid.raster(img)
 ```
 
 ## 4) Make UR-CH4 proportion-loss plot vs. time
