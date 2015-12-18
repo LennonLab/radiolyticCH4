@@ -9,14 +9,14 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-Part of May 2015 mesocosm experiment on Cat Ba Island, Vietnam to investigate mechanisms of methane oxidation in cave ecosystems. General design of experiment was to conduct in situ "bag" experiments where rocks where "live" and "dead" rocks were incubated overnight. The live rock treatment contained ~10 rocks and 150 mL of water in a ~50 gallon polyethylene bag sealed tight. The dead rock treatment contained ~10 rocks and 150 mL of a 10% bleach solution. We measured methane of the air that was used to fill the bags at time zero using a Gasmet. We returned to the cave approximatley 18 hours later and measured methane in the bags at time final. In addition, we had a control, which consisted of measuring methane in a bag containing no rocks, water, or bleach. This generalized experiment was conducted in three caves: Hoa Cuong and Minh Chau. 
+Part of May 2015 mesocosm experiment on Cat Ba Island, Vietnam to investigate mechanisms of methane oxidation in cave ecosystems. General design of experiment was to conduct in situ "bag" experiments where rocks where "live" and "dead" rocks were incubated overnight. The live rock treatment contained ~10 rocks and 150 mL of water in a ~50 gallon polyethylene bag sealed tight. The dead rock treatment contained ~10 rocks and 150 mL of a 10% bleach solution. We measured methane of the air that was used to fill the bags at time zero using a Gasmet. We returned to the cave approximatley 18 hours later and measured methane in the bags at time final. In addition, we had a control, which consisted of measuring methane in a bag containing no rocks, water, or bleach. This generalized experiment was conducted in two caves: Hoa Cuong and Minh Chau. 
 
 ## 1) SET WORKING DIRECTORY AND LOAD DATA
 ```{r}
 rm(list=ls()) 
 getwd()
 setwd("~/GitHub/radiolyticCH4")
-data <- read.table("data/cavebag/bagexp.txt", sep="\t", header=TRUE)
+data <- read.table("data/caves/cavebag/bagexp.txt", sep="\t", header=TRUE)
 data <- data[-19,] # remove: sample "9e" = cave air measured near bag 
 ```
 
@@ -75,7 +75,6 @@ HC.red.1 <- (mean(HC.dead[,5]) - HC.live[1,5])/mean(HC.dead[,5])
 HC.red.2 <- (mean(HC.dead[,5]) - HC.live[2,5])/mean(HC.dead[,5])
 HC.red.3 <- (mean(HC.dead[,5]) - HC.live[3,5])/mean(HC.dead[,5])
 
-
 MC.live <- MC[(MC$Treat == "live"),]
 MC.red.1 <- (mean(MC.dead[,5]) - MC.live[1,5])/mean(MC.dead[,5])
 MC.red.2 <- (mean(MC.dead[,5]) - MC.live[2,5])/mean(MC.dead[,5])
@@ -84,10 +83,10 @@ MC.red.3 <- (mean(MC.dead[,5]) - MC.live[3,5])/mean(MC.dead[,5])
 re.mean <-mean(c(HC.red.1, HC.red.2, HC.red.3, MC.red.1, MC.red.2, MC.red.3))
 re.sem <- sem(c(HC.red.1, HC.red.2, HC.red.3, MC.red.1, MC.red.2, MC.red.3))
 ```
+
 ## 3) PLOT DATA - Hoa Cuong and Mingh Chau
 ```{r}
-#```{r}
-png(filename="~/GitHub/Vietnam/figures/cave.bags.2.png", width = 1500, 
+png(filename="~/GitHub/radiolyticCH4/figures/cave.bags.png", width = 1500, 
     height = 900, res = 96*2)
 
 plot.new()
@@ -170,7 +169,10 @@ Use concentraiton data, time of incbuation, and rock surface area to estimate CH
 
 ```{r}
 # Load surface area data (cm2)
-sa.cm2 <- read.table("data/surface.area.txt", sep="\t", header=TRUE)
+sa.cm2 <- read.table("~/GitHub/radiolyticCH4/data/caves/cavebag/surface.area.txt", 
+                sep="\t", header=TRUE)
+sa.cm2 <- read.table("~/GitHub/radiolyticCH4/data/caves/cavebag/surface.area.final.txt", 
+                sep="\t", header=TRUE)
 names(sa.cm2)[3]<-paste("sa.cm2")
 sa.conv <- 10000 # cm2 to m2 conversion
 sa.m2 <- sa.cm2[,3]/sa.conv # create m2 data

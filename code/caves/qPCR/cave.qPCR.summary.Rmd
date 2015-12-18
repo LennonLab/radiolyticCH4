@@ -20,8 +20,10 @@ setwd("~/GitHub/radiolyticCH4")
 
 ## Read in relevant data
 ```{r}
-mob <- read.delim("data/qPCR/mob.rabund.txt", sep =" ", stringsAsFactors = FALSE) 
-rock.names <- read.delim("data/qPCR/sample.by.rock.txt", stringsAsFactors = FALSE, header = FALSE) 
+mob <- read.delim("~/GitHub/radiolyticCH4/data/caves/qPCR/mob.rabund.txt", sep =" ", 
+                  stringsAsFactors = FALSE) 
+rock.names <- read.delim("~/GitHub/radiolyticCH4/data/caves/qPCR/sample.by.rock.txt",
+                  stringsAsFactors = FALSE, header = FALSE) 
 
 mob[is.na(mob)] <- 0
 ```
@@ -115,7 +117,6 @@ meanMC.gram <- mean(c(MC1, MC2, MC3))
 min(c(MC1, MC2, MC3))
 max(c(MC1, MC2, MC3))
 
-
 semMC.gram <- sem((c(MC1, MC2, MC3)))
 meanHC.gram <- mean(c(HC1, HC2, HC3))
 semHC.gram <- sem(c(HC1, HC2, HC3))
@@ -196,7 +197,7 @@ relMC1 <- (relMC1R1+relMC1R3)/2 # removed MC1R2; no amplification
 relMC2 <- (relMC2R1+relMC2R2+relMC2R3)/3 
 
 # Minh Chou Cave Bag 3 
-relMC3 <- (relMC3R1+relMC3R2)/2 
+relMC3 <- (relMC3R2)
 
 # Hoa Cuong Cave Bag 1
 relHC1 <- (relHC1R1+relHC1R2+relHC1R3)/3 
@@ -212,7 +213,7 @@ rel.meanMC.gram <- mean(c(relMC1, relMC2, relMC3))
 min(c(relMC1, relMC2, relMC3))*100
 max(c(relMC1, relMC2, relMC3))*100
 
-semMC.gram <- sem((c(rekMC1, relMC2, relMC3)))
+semMC.gram <- sem((c(relMC1, relMC2, relMC3)))
 
 rel.meanHC.gram <- mean(c(relHC1, relHC2, relHC3))
 rel.semHC.gram <- sem(c(relHC1, relHC2, relHC3))

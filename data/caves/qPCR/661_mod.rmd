@@ -1,0 +1,41 @@
+
+
+
+
+```{r}
+
+rm(list=ls())
+getwd()
+#setwd("/Users/lennonj/GitHub/Vietnam")
+D <- read.delim("20150817_VN_661_qPCR.txt", stringsAsFactors=FALSE) # read in data of interest
+
+sapply(D, class) # describes format of columns
+
+#change copy numbers to their correct values
+
+D[57,4] <- 4830000000
+D[58,4] <- 483000000
+D[59,4] <- 48300000
+D[60,4] <- 4830000
+D[61,4] <- 483000
+D[62,4] <- 48300
+D[63,4] <- 4830
+D[64,4] <- 483
+
+D[,3] <- as.numeric(D[,3]) # change data type of column 3
+D[,4] <- as.numeric(D[,4]) # change data type of column 4
+
+ct <- D[57:64,3] # flourescent values of the standards
+s <- D[57:64,4] # Standard copy numbers
+
+plot(ct , log10(s)) # plots flourescence against standard copy number for a visual check
+reg <- lm(log10(s) ~ ct) # linear regression of log10(s) vs ct
+reg_sum <- summary(reg) # summary of analysis
+
+for (i in 1:51) {
+  D[i,4] <- (10^(9.507316 -0.181295*D[i,3]))
+} 
+
+write.table(D, file = "20150817_VN_661_qPCR_mod.txt")
+
+```
