@@ -20,8 +20,10 @@ setwd("~/GitHub/radiolyticCH4")
 
 ## Read Microbial data
 ```{r}
-mob <- read.delim("data/qPCR/mob.661.out.txt", sep =" ", stringsAsFactors = FALSE) 
-eub <- read.delim("data/qPCR/20150813_VN_EUB_qPCR.txt", stringsAsFactors = FALSE) 
+mob <- read.delim("~/GitHub/radiolyticCH4/data/caves/qPCR/mob.661.out.txt", sep =" ", 
+                  stringsAsFactors = FALSE) 
+eub <- read.delim("~/GitHub/radiolyticCH4/data/caves/qPCR/20150813_VN_EUB_qPCR.txt", 
+                  stringsAsFactors = FALSE) 
 ```
 
 ## Calculate the relative abundance of methanotrophs
@@ -60,6 +62,6 @@ mob.p.mass <- n.mob.cor/mass
 name <- mob[1:51,2] # generates a labeling vector
 t.m.rabund <- cbind(name, mass, n.mob.cor, mob.rabund, mob.p.mass) # summary table
 
-write.table(t.m.rabund, file = "data/qPCR/mob.rabund.txt")
+write.table(t.m.rabund, file = "~/GitHub/radiolyticCH4/data/caves/qPCR/mob.rabund.txt")
 ```
 

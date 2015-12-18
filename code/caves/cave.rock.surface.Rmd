@@ -9,14 +9,14 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-Part of May 2015 mesocosm experiment on Cat Ba Island, Vietnam to investigate mechanisms of methane oxidation in cave ecosystems. General design of experiment was to conduct in situ "bag" experiments where rocks where "live" and "dead" rocks were incubated overnight. Rocks that were incubated in the bags were taken out and measured so we could estimate rates of methane oxication on an areal basis. In Hoa Cương cave, we took pictures of each of the rocks. I imported these images into Adobe Photoshop CS6. I used the ruler tool to measure the obtain measurements so that I could estimate the surface area of each rock assuming an ellipsoid shape. Calculation below are used to estimate rocks surface area from these measurments. 
+Part of May 2015 mesocosm experiment on Cat Ba Island, Vietnam to investigate mechanisms of methane oxidation in cave ecosystems. General design of experiment was to conduct in situ "bag" experiments where rocks where "live" and "dead" rocks were incubated overnight. Rocks that were incubated in the bags were taken out and measured so we could estimate rates of methane oxication on an areal basis. In Hoa Cuong cave, we took pictures of each of the rocks. I imported these images into Adobe Photoshop CS6. I used the ruler tool to measure the obtain measurements so that I could estimate the surface area of each rock assuming an ellipsoid shape. Calculation below are used to estimate rocks surface area from these measurments. 
 
 ## 1) SET WORKING DIRECTORY AND LOAD DATA
 ```{r}
 rm(list=ls()) 
 getwd()
 setwd("~/GitHub/radiolyticCH4")
-data <- read.table("data/areas/surface.area.txt", sep="\t", header=TRUE)
+data <- read.table("data/caves/cavebag/surface.area.txt", sep="\t", header=TRUE)
 rocks <- data[data$rock != "cap",] # only rock meausrements
 caps <- data[(data$rock == "cap"),] # bottle cap used for scale conversion
 ```
@@ -92,7 +92,8 @@ surface.areas <- round(c(rocks.surface,minh.chau.sa), digits = 2)
 bags <- c(1,2,3,1,2,3)
 cave <- c("HC", "HC", "HC", "MC", "MC", "MC")
 surface.area.final <- as.data.frame(cbind(cave, bags, surface.areas), row.names = "null")
-write.table(surface.area.final, file = "data/areas/surface.area.final.txt", sep="\t")
+write.table(surface.area.final, file = 
+          "~/GitHub/radiolyticCH4/data/caves/cavebag/surface.area.final.txt", sep="\t")
 ```
 
 

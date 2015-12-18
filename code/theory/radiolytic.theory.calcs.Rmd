@@ -86,11 +86,12 @@ CH4.time.yrs <- CH4.time.days/365
 print(format(CH4.time.yrs, scientific = TRUE))
 ```
 
-## How many CH~4~ molecules can be oxidized via ions and radicals generated via $\alpha$ particles?
+## How many CH~4~ molecules can be oxidized via ions and radicals generated via $\alpha$ particles and water vapor?
 ```{r}
 
 # Ions generated assuming 1 alpha decay generates 10^7 total ions
-ions <- 10^7
+# From Fernandez-Cortes et al. (2015) page 8, column 2
+ions <- 4.31 * 10^5
 
 # Time to oxidize all CH4 molecules in 2 ppm CH4
 CH4.time.ions.sec <- CH4.molec.m3.air/(Rn*ions)

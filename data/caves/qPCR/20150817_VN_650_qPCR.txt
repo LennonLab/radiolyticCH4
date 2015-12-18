@@ -1,0 +1,81 @@
+Pos	Name	Ct SYBR	Amount SYBR [Copies]	Target SYBR
+A1	264		-	
+A2	264		-	
+A3	264		-	
+A4	265	13.82	3.45E+07	
+A5	265	15.86	1.65E+07	
+A6	265	10.46	1.16E+08	
+A7	266		-	
+A8	266	33.61	27500	
+B1	unk		-	
+B2	267		-	
+B3	267		-	
+B4	267		-	
+B5	268		-	
+B6	268		-	
+B7	268	9.59	1.59E+08	
+B8	269		-	
+C1	269		-	
+C2	269	20.73	2.85E+06	
+C3	270		-	
+C4	270		-	
+C5	270		-	
+C6	271		-	
+C7	271		-	
+C8	271		-	
+D1	272		-	
+D2	272		-	
+D3	272		-	
+D4	273		-	
+D5	273	37.78	6103	
+D6	273	39.15	3724	
+D7	274	34.53	19675	
+D8	274	35.54	13674	
+E1	274	35.05	16313	
+E2	275		-	
+E3	275		-	
+E4	275		-	
+E5	276		-	
+E6	276		-	
+E7	276		-	
+E8	277	36.15	10979	
+F1	277	37.50	6760	
+F2	277	38.91	4060	
+F3	278		-	
+F4	278		-	
+F5	278		-	
+F6	279		-	
+F7	279		-	
+F8	279		-	
+G1	281		-	
+G2	281	39.75	3003	
+G3	281		-	
+G4	Negative	-	-	
+G5	Negative	-	-	
+G6	Negative	-	-	
+G7	Negative	-	-	
+G8	Negative	-	-	
+H1	650	2.83	4.94E+09	
+H2	650	4.88	4.94E+08	
+H3	650	11.03	4.94E+07	
+H4	650	18.45	4.94E+06	
+H5	650	25.81	4.94E+05	
+H6	650	32.18	49400	
+H7	650	39.30	4940	
+H8	650		494	
+
+Analysis Parameters
+Type of Application	Quantification
+Dye(s)	SYBR
+Inverted Data	OFF
+Threshold setting	Noiseband
+Threshold level	276
+Baseline setting	Automatic
+Baseline range (from cycle no. ... to)	n/a
+Drift Correction	OFF
+
+Standard curve parameters
+Slope	-6.385
+Y-Intercept	61.95
+Efficiency	0.43
+R^2	0.987

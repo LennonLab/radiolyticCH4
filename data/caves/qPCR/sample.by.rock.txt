@@ -1,0 +1,19 @@
+IUBS00264	MC1 R1	MC1 R1	Minh Châu								
+IUBS00265	MC3 R2	MC3 R2	Minh Châu			 					
+IUBS00266	MC1 R2	MC1 R2	Minh Châu								
+IUBS00267	MC3 R1	MC3 R1	Minh Châu								
+IUBS00268	MC2 R2	MC2 R2	Minh Châu								
+IUBS00269	MC2 R1	MC2 R1	Minh Châu								
+IUBS00270	MC1 R3	MC1 R3	Minh Châu								
+IUBS00271	MC3 R3	MC3 R3	Minh Châu			 					
+IUBS00272	MC2 R3	MC2 R3	Minh Châu								
+IUBS00273	HC2 R1	HC2 R1	Hoa Cuong 								
+IUBS00274	HC3 R3	HC3 R3	Hoa Cuong 								
+IUBS00275	HC3 R1	HC3 R1	Hoa Cuong 								
+IUBS00276	HC2 R3	HC2 R3	Hoa Cuong 								
+IUBS00277	HC1 R1	HC1 R1	Hoa Cuong 								
+IUBS00278	HC2 R2	HC2 R2	Hoa Cuong 								
+IUBS00279	HC1 R3	HC1 R3	Hoa Cuong 								
+IUBS00280	HC3 R2	HC3 R2	Hoa Cuong 								
+IUBS00281	HC1 R2	HC1 R2	Hoa Cuong 								
+											

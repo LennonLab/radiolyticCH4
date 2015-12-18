@@ -1,0 +1,18 @@
+```{r}
+
+rm(list=ls())
+getwd()
+
+D <- read.delim("20150817_VN_650_qPCR.txt", stringsAsFactors=FALSE) # read in data of interest
+
+sapply(D, class) # describes format of columns
+
+#change copy numbers to their correct values
+
+D[4,4] <- 0
+D[5,4] <- 0
+D[6,4] <- 0
+D[15,4] <- 0
+D[18,4] <- 0
+
+write.table(D, file = "20150817_VN_650_qPCR_mod.txt")

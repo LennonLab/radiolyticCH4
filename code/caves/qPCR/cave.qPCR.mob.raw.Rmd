@@ -19,7 +19,8 @@ setwd("~/GitHub/radiolyticCH4")
 
 ## Read MOB data
 ```{r}
-mob <- read.delim("data/qPCR/20150817_VN_661_qPCR.txt", stringsAsFactors = FALSE) 
+mob <- read.delim("~/GitHub/radiolyticCH4/data/caves/qPCR/20150817_VN_661_qPCR.txt", 
+            stringsAsFactors = FALSE) 
 ```
 
 ## Change copy numbers to their correct values
@@ -60,6 +61,6 @@ for (i in 1:51) {
   mob[i,4] <- (10^(reg$coefficients[1] + reg$coefficients[2]*mob[i,3]))
 } 
 
-write.table(mob, file = "data/qPCR/mob.661.out.txt")
+write.table(mob, file = "~/GitHub/radiolyticCH4/data/caves/qPCR/mob.661.out.txt")
 ```
 
