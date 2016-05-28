@@ -95,7 +95,7 @@ par(mar = c(6, 0.5, 5, 0.5))
 par(oma = c(1, 5, 1, 2))
   
 HC.plot <- plot(HC.means, ylim = c(0, 3), xlim = c(0.5, 3.5), 
-      main = "Hoa Cương", pch = 22, bg = "white", lwd = 2, cex = 3, yaxt = "n", xaxt = "n", 
+      main = "Hoa Cương Cave", pch = 22, bg = "white", lwd = 2, cex = 3, yaxt = "n", xaxt = "n", 
       cex.lab = 2, cex.axis = 1.5, las = 1, ylab = "", xlab = "")
       box(lwd = 2)
 
@@ -106,7 +106,7 @@ arrows(x0 = 2:3, y0 = HC.means[2:3], y1 = HC.means[2:3] - HC.sem[2:3], angle = 9
    length = 0.05, lwd = 2)
 
 # Add y-label
-mtext(expression('CH'[4]*' (ppm)'), side = 2, outer = TRUE, cex = 1.75, 
+mtext(expression('CH'[4]*' (ppmv)'), side = 2, outer = TRUE, cex = 1.75, 
       line = 2, adj = 0.55)
 
 # Add p-value for t-test
@@ -131,7 +131,7 @@ abline(h = HC.air$CH4, col = "black", lty = 3, lwd = 2)
 # Add Ming Chau panel to the plot
 
 MC.plot <- plot(MC.means, ylim = c(0, 3), xlim = c(0.5, 3.5), 
-      main = "Minh Châu", pch = 22, bg = "white", lwd = 2, cex = 3, yaxt = "n", xaxt = "n", 
+      main = "Minh Châu Cave", pch = 22, bg = "white", lwd = 2, cex = 3, yaxt = "n", xaxt = "n", 
       cex.lab = 2, cex.axis = 1.5, las = 1, ylab = "", xlab = "")
       box(lwd = 2)
 
